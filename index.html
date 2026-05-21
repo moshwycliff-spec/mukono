@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1a5f2a">
+    <meta name="description" content="Mukono District Social Media & Academic Performance Survey">
+    <title>Mukono Survey - Social Media & Academics</title>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Apple Touch Icon -->
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Preconnect for faster loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+
+    <!-- Google Fonts - Noto Sans for good Luganda/English support -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Offline Indicator -->
+    <div id="offline-banner" class="offline-banner hidden">
+        <span>📡 Offline Mode - Responses saved locally</span>
+    </div>
+
+    <!-- Language Selector -->
+    <div id="lang-bar" class="lang-bar">
+        <button onclick="setLanguage('en')" class="lang-btn active" id="btn-en">English</button>
+        <button onclick="setLanguage('lg')" class="lang-btn" id="btn-lg">Luganda</button>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+
+        <!-- Header -->
+        <header class="survey-header">
+            <div class="logo-section">
+                <div class="uganda-flag">
+                    <div class="flag-stripe black"></div>
+                    <div class="flag-stripe yellow"></div>
+                    <div class="flag-stripe red"></div>
+                </div>
+                <div class="header-text">
+                    <h1 data-en="Mukono District Survey" data-lg="Okusisinkana mu Disitulikiti y'e Mukono">Mukono District Survey</h1>
+                    <p class="subtitle" data-en="Social Media & Academic Performance Study" data-lg="Okukozesa Social Media n'Obuwanguzi mu Kusoma">Social Media & Academic Performance Study</p>
+                </div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+                <span class="progress-text" id="progress-text">0%</span>
+            </div>
+        </header>
+
+        <!-- Welcome Screen -->
+        <section id="welcome-screen" class="screen active">
+            <div class="card">
+                <div class="welcome-icon">📚📱</div>
+                <h2 data-en="Welcome, Student!" data-lg="Tukwaniriza, Omuyizi!">Welcome, Student!</h2>
+                <p data-en="This survey takes about 8-10 minutes. Your answers are completely anonymous and will help improve education in Mukono District." 
+                   data-lg="Okusisinkana kuno kutwala ddakiika 8-10. Eby'okuddamu byo tebimala kwetegereza era bijja okuyamba okulongoosa okusoma mu Disitulikiti y'e Mukono.">
+                    This survey takes about 8-10 minutes. Your answers are completely anonymous and will help improve education in Mukono District.
+                </p>
+
+                <div class="info-box">
+                    <h3 data-en="Before You Start:" data-lg="Ng'otandika:">Before You Start:</h3>
+                    <ul>
+                        <li data-en="Find a quiet place" data-lg="Funa ekifo ekitereevu">Find a quiet place</li>
+                        <li data-en="Be honest - there are no wrong answers" data-lg="Weebuuze obwesigwa - tewali eby'okuddamu ebibi">Be honest - there are no wrong answers</li>
+                        <li data-en="Answer based on your typical week" data-lg="Ddamu okusinziira ku wiiki yo ey'obulijjo">Answer based on your typical week</li>
+                    </ul>
+                </div>
+
+                <div class="consent-box">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="consent-check" onchange="toggleStartButton()">
+                        <span data-en="I agree to participate voluntarily. I understand my responses are anonymous." 
+                              data-lg="Nze nkyagala okwetaba. Ntegeera nti eby'okuddamu byange tebimala kwetegereza.">
+                            I agree to participate voluntarily. I understand my responses are anonymous.
+                        </span>
+                    </label>
+                </div>
+
+                <button id="start-btn" class="btn-primary" onclick="startSurvey()" disabled 
+                        data-en="Start Survey" data-lg="Tandika Okusisinkana">Start Survey</button>
+            </div>
+        </section>
+
+        <!-- Survey Form -->
+        <form id="survey-form" class="hidden">
+
+            <!-- SECTION A: Demographics -->
+            <section id="section-a" class="screen">
+                <div class="section-header">
+                    <span class="section-badge">A</span>
+                    <h2 data-en="About You" data-lg="Ebikukwatako">About You</h2>
+                </div>
+
+                <div class="card">
+                    <div class="question-block">
+                        <label class="question-label" data-en="1. What is your gender?" data-lg="1. Oli musajja oba muwala?">
+                            1. What is your gender?
+                        </label>
+                        <div class="radio-group">
+                            <label class="radio-card">
+                                <input type="radio" name="gender" value="female" required>
+                                <span class="radio-icon">👩</span>
+                                <span data-en="Female" data-lg="Omuwala">Female</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="gender" value="male">
+                                <span class="radio-icon">👨</span>
+                                <span data-en="Male" data-lg="Omusajja">Male</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="gender" value="prefer_not">
+                                <span class="radio-icon">🤐</span>
+                                <span data-en="Prefer not to say" data-lg="Siyagala kugamba">Prefer not to say</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question-block">
+                        <label class="question-label" data-en="2. What class are you in?" data-lg="2. Oli mu kibiina ki?">
+                            2. What class are you in?
+                        </label>
+                        <div class="radio-group horizontal">
+                            <label class="radio-pill">
+                                <input type="radio" name="class_level" value="S3" required>
+                                <span>S.3</span>
+                            </label>
+                            <label class="radio-pill">
+                                <input type="radio" name="class_level" value="S4">
+                                <span>S.4</span>
+                            </label>
+                            <label class="radio-pill">
+                                <input type="radio" name="class_level" value="S5">
+                                <span>S.5</span>
+                            </label>
+                            <label class="radio-pill">
+                                <input type="radio" name="class_level" value="S6">
+                                <span>S.6</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question-block">
+                        <label class="question-label" data-en="3. What type of school do you attend?" data-lg="3. Oli mu ttendekero lya ki?">
+                            3. What type of school do you attend?
+                        </label>
+                        <div class="radio-group">
+                            <label class="radio-card">
+                                <input type="radio" name="school_type" value="government" required>
+                                <span class="radio-icon">🏛️</span>
+                                <span data-en="Government School" data-lg="Ttendekero lya Gavumenti">Government School</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="school_type" value="private">
+                                <span class="radio-icon">🏫</span>
+                                <span data-en="Private School" data-lg="Ttendekero lya Busungu">Private School</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="school_type" value="vocational">
+                                <span class="radio-icon">🔧</span>
+                                <span data-en="Vocational School" data-lg="Ttendekero lya Mawaka">Vocational School</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question-block">
+                        <label class="question-label" data-en="4. What is the highest education level of your parents/guardians?" 
+                               data-lg="4. Okusoma okusingira waggulu kw'abaazala bo oba abakukuuma kwe kiki?">
+                            4. What is the highest education level of your parents/guardians?
+                        </label>
+                        <select name="parent_education" required class="select-input">
+                            <option value="" data-en="Select..." data-lg="Londa...">Select...</option>
+                            <option value="none" data-en="No formal education" data-lg="Tewali kusoma">No formal education</option>
+                            <option value="primary" data-en="Primary (P7 or below)" data-lg="Pulayimale (P7 oba wansi)">Primary (P7 or below)</option>
+                            <option value="secondary" data-en="Secondary (O-Level or A-Level)" data-lg="Sekondale (O-Level oba A-Level)">Secondary (O-Level or A-Level)</option>
+                            <option value="tertiary" data-en="Tertiary/University" data-lg="Yunivasite/Tetiyale">Tertiary/University</option>
+                            <option value="unknown" data-en="I don't know" data-lg="Simanyi">I don't know</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button type="button" class="btn-secondary" onclick="nextSection('section-b')" 
+                            data-en="Next →" data-lg="Ekidako →">Next →</button>
+                </div>
+            </section>
+
+            <!-- SECTION B: Device & Internet Access -->
+            <section id="section-b" class="screen hidden">
+                <div class="section-header">
+                    <span class="section-badge">B</span>
+                    <h2 data-en="Your Digital Access" data-lg="Okufuna Enkola ya Kompyuta">Your Digital Access</h2>
+                </div>
+
+                <div class="card">
+                    <div class="question-block">
+                        <label class="question-label" data-en="5. Do you own a smartphone?" data-lg="5. Olina simu ey'obwongo?">
+                            5. Do you own a smartphone?
+                        </label>
+                        <div class="radio-group">
+                            <label class="radio-card">
+                                <input type="radio" name="owns_phone" value="yes" required onchange="togglePhoneQuestions(true)">
+                                <span class="radio-icon">📱</span>
+                                <span data-en="Yes, my own phone" data-lg="Yee, simu yange">Yes, my own phone</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="owns_phone" value="family" onchange="togglePhoneQuestions(true)">
+                                <span class="radio-icon">👨‍👩‍👧</span>
+                                <span data-en="I share with family" data-lg="Nkozesa ey'awaka">I share with family</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="owns_phone" value="no" onchange="togglePhoneQuestions(false)">
+                                <span class="radio-icon">❌</span>
+                                <span data-en="No smartphone" data-lg="Ssimu">No smartphone</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="phone-details" class="conditional-block">
+                        <div class="question-block">
+                            <label class="question-label" data-en="6. How do you mainly access the internet?" 
+                                   data-lg="6. Otya bwekityo okufuna interneti?">
+                                6. How do you mainly access the internet?
+                            </label>
+                            <div class="radio-group">
+                                <label class="radio-card">
+                                    <input type="radio" name="internet_access" value="personal_data">
+                                    <span class="radio-icon">📶</span>
+                                    <span data-en="Personal data bundle" data-lg="Data yange">Personal data bundle</span>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="radio" name="internet_access" value="school_wifi">
+                                    <span class="radio-icon">🏫</span>
+                                    <span data-en="School WiFi/computer lab" data-lg="WiFi ya ttendekero">School WiFi/computer lab</span>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="radio" name="internet_access" value="cafe">
+                                    <span class="radio-icon">☕</span>
+                                    <span data-en="Internet café" data-lg="Kafee ya interneti">Internet café</span>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="radio" name="internet_access" value="parent_phone">
+                                    <span class="radio-icon">👨‍👩‍👧</span>
+                                    <span data-en="Parent's/guardian's phone" data-lg="Simu y'abaazala">Parent's/guardian's phone</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question-block">
+                        <label class="question-label" data-en="7. How many hours per day do you typically use your phone (all activities)?" 
+                               data-lg="7. Omulundi gwa ssawa mmeka ku lunaku ogukozesa simu yo (ebintu byonna)?">
+                            7. How many hours per day do you typically use your phone (all activities)?
+                        </label>
+                        <div class="slider-container">
+                            <input type="range" name="phone_hours" min="0" max="12" value="2" class="slider" 
+                                   oninput="updateSliderValue(this, 'phone-hours-val')">
+                            <div class="slider-labels">
+                                <span>0h</span>
+                                <span class="slider-value" id="phone-hours-val">2 hours</span>
+                                <span>12h+</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button type="button" class="btn-ghost" onclick="prevSection('section-a')" 
+                            data-en="← Back" data-lg="← Emabega">← Back</button>
+                    <button type="button" class="btn-secondary" onclick="nextSection('section-c')" 
+                            data-en="Next →" data-lg="Ekidako →">Next →</button>
+                </div>
+            </section>
+
+            <!-- SECTION C: Social Media Usage -->
+            <section id="section-c" class="screen hidden">
+                <div class="section-header">
+                    <span class="section-badge">C</span>
+                    <h2 data-en="Social Media Use" data-lg="Okukozesa Social Media">Social Media Use</h2>
+                </div>
+
+                <div class="card">
+                    <div class="question-block">
+                        <label class="question-label" data-en="8. Which social media platforms do you use? (Select all that apply)" 
+                               data-lg="8. Enkola ki za social media z'okozesa? (Lonna ezikukwatako)">
+                            8. Which social media platforms do you use? (Select all that apply)
+                        </label>
+                        <div class="checkbox-grid">
+                            <label class="check-card">
+                                <input type="checkbox" name="platforms" value="whatsapp">
+                                <span class="check-icon">💬</span>
+                                <span>WhatsApp</span>
+                            </label>
+                            <label class="check-card">
+                                <input type="checkbox" name="platforms" value="tiktok">
+                                <span class="check-icon">🎵</span>
+                                <span>TikTok</span>
+                            </label>
+                            <label class="check-card">
+                                <input type="checkbox" name="platforms" value="facebook">
+                                <span class="check-icon">📘</span>
+                                <span>Facebook</span>
+                            </label>
+                            <label class="check-card">
+                                <input type="checkbox" name="platforms" value="instagram">
+                                <span class="check-icon">📷</span>
+                                <span>Instagram</span>
+                            </label>
+                            <label class="check-card">
+                                <input type="checkbox" name="platforms" value="youtube">
+                                <span class="check-icon">▶️</span>
+                                <span>YouTube</span>
+                            </label>
+                            <label class="check-card">
+                                <input type="checkbox" name="platforms" value="twitter">
+                                <span class="check-icon">🐦</span>
+                                <span>Twitter/X</span>
+                            </label>
+                            <label class="check-card">
+                                <input type="checkbox" name="platforms" value="snapchat">
+                                <span class="check-icon">👻</span>
+                                <span>Snapchat</span>
+                            </label>
+                            <label class="check-card">
+                                <input type="checkbox" name="platforms" value="none">
+                                <span class="check-icon">❌</span>
+                                <span data-en="None of these" data-lg="Tewali ku zo">None of these</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question-block" id="sm-duration-block">
+                        <label class="question-label" data-en="9. How many hours per day do you spend on social media specifically?" 
+                               data-lg="9. Omulundi gwa ssawa mmeka ku lunaku ogukozesa social media yokka?">
+                            9. How many hours per day do you spend on social media specifically?
+                        </label>
+                        <div class="slider-container">
+                            <input type="range" name="sm_hours" min="0" max="10" value="1" class="slider" 
+                                   oninput="updateSliderValue(this, 'sm-hours-val')">
+                            <div class="slider-labels">
+                                <span>0h</span>
+                                <span class="slider-value" id="sm-hours-val">1 hour</span>
+                                <span>10h+</span>
+                            </div>
+                        </div>
+                        <p class="hint" data-en="Be honest! This includes all platforms." 
+                           data-lg="Weebuuze obwesigwa! Kino kikwata enkola zonna.">Be honest! This includes all platforms.</p>
+                    </div>
+
+                    <div class="question-block">
+                        <label class="question-label" data-en="10. What do you mainly use social media for? (Select all that apply)" 
+                               data-lg="10. Okyusa social media ki? (Lonna ezikukwatako)">
+                            10. What do you mainly use social media for? (Select all that apply)
+                        </label>
+                        <div class="checkbox-grid">
+                            <label class="check-card">
+                                <input type="checkbox" name="sm_activities" value="chat_friends">
+                                <span class="check-icon">💬</span>
+                                <span data-en="Chatting with friends" data-lg="Okwogera ne mikwano">Chatting with friends</span>
+                            </label>
+                            <label class="check-card">
+                                <input type="checkbox" name="sm_activities" value="entertainment">
+                                <span class="check-icon">🎬</span>
+                                <span data-en="Videos/Music/Fun" data-lg="Vidiyo/Muziki/Ebinyumu">Videos/Music/Fun</span>
+                            </label>
+                            <label class="check-card">
+                                <input type="checkbox" name="sm_activities" value="academic">
+                                <span class="check-icon">📚</span>
+                                <span data-en="School work/Research" data-lg="Okusoma/Okunoonya">School work/Research</span>
+                            </label>
+                            <label class="check-card">
+                                <input type="checkbox" name="sm_activities" value="news">
+                                <span class="check-icon">📰</span>
+                                <span data-en="News & Information" data-lg="Amawulire n'Amagezi">News & Information</span>
+                            </label>
+                            <label class="check-card">
+                                <input type="checkbox" name="sm_activities" value="school_groups">
+                                <span class="check-icon">👥</span>
+                                <span data-en="School group discussions" data-lg="Okwogera mu kibiina">School group discussions</span>
+                            </label>
+                            <label class="check-card">
+                                <input type="checkbox" name="sm_activities" value="business">
+                                <span class="check-icon">💰</span>
+                                <span data-en="Business/Selling" data-lg="Okutunda/Eby'obusuubuuzi">Business/Selling</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button type="button" class="btn-ghost" onclick="prevSection('section-b')" 
+                            data-en="← Back" data-lg="← Emabega">← Back</button>
+                    <button type="button" class="btn-secondary" onclick="nextSection('section-d')" 
+                            data-en="Next →" data-lg="Ekidako →">Next →</button>
+                </div>
+            </section>
+
+            <!-- SECTION D: Usage Contexts -->
+            <section id="section-d" class="screen hidden">
+                <div class="section-header">
+                    <span class="section-badge">D</span>
+                    <h2 data-en="When & Where You Use It" data-lg="Obudde n'Ekifo W'okozesa">When & Where You Use It</h2>
+                </div>
+
+                <div class="card">
+                    <div class="question-block">
+                        <label class="question-label" data-en="11. When do you typically use social media? (Select all that apply)" 
+                               data-lg="11. Obudde ki bw'okozesa social media? (Lonna ezikukwatako)">
+                            11. When do you typically use social media? (Select all that apply)
+                        </label>
+                        <div class="checkbox-grid">
+                            <label class="check-card">
+                                <input type="checkbox" name="usage_times" value="during_class">
+                                <span class="check-icon">🏫</span>
+                                <span data-en="During class time" data-lg="Mu kiseera ky'okusoma">During class time</span>
+                            </label>
+                            <label class="check-card">
+                                <input type="checkbox" name="usage_times" value="during_homework">
+                                <span class="check-icon">📝</span>
+                                <span data-en="While doing homework" data-lg="Bwekola homework">While doing homework</span>
+                            </label>
+                            <label class="check-card">
+                                <input type="checkbox" name="usage_times" value="before_bed">
+                                <span class="check-icon">🌙</span>
+                                <span data-en="Before bed (after 10 PM)" data-lg="Olweggulo (oluvannyuma lwa ssawa 10 ez'ekiro)">Before bed (after 10 PM)</span>
+                            </label>
+                            <label class="check-card">
+                                <input type="checkbox" name="usage_times" value="study_time">
+                                <span class="check-icon">📖</span>
+                                <span data-en="During personal study time" data-lg="Mu kiseera ky'okusoma kwange">During personal study time</span>
+                            </label>
+                            <label class="check-card">
+                                <input type="checkbox" name="usage_times" value="break_time">
+                                <span class="check-icon">☕</span>
+                                <span data-en="During break/lunch" data-lg="Mu kiseera ky'okuwummula/eky'emmere">During break/lunch</span>
+                            </label>
+                            <label class="check-card">
+                                <input type="checkbox" name="usage_times" value="free_time">
+                                <span class="check-icon">🆓</span>
+                                <span data-en="Only during free time" data-lg="Mu kiseera ky'obwerere kyokka">Only during free time</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question-block">
+                        <label class="question-label" data-en="12. How often do you check social media notifications during study time?" 
+                               data-lg="12. Omulundi gwa kasera okebera obubaka bwa social media ng'osoma?">
+                            12. How often do you check social media notifications during study time?
+                        </label>
+                        <div class="radio-group">
+                            <label class="radio-card">
+                                <input type="radio" name="notification_check" value="never" required>
+                                <span class="radio-icon">🚫</span>
+                                <span data-en="Never" data-lg="Teri kiseera">Never</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="notification_check" value="rarely">
+                                <span class="radio-icon">🙂</span>
+                                <span data-en="Rarely" data-lg="Kisoba">Rarely</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="notification_check" value="sometimes">
+                                <span class="radio-icon">🤔</span>
+                                <span data-en="Sometimes" data-lg="Omulundi gumu">Sometimes</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="notification_check" value="often">
+                                <span class="radio-icon">📱</span>
+                                <span data-en="Often" data-lg="Emirundi mingi">Often</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="notification_check" value="always">
+                                <span class="radio-icon">🔥</span>
+                                <span data-en="All the time" data-lg="Buli kiseera">All the time</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button type="button" class="btn-ghost" onclick="prevSection('section-c')" 
+                            data-en="← Back" data-lg="← Emabega">← Back</button>
+                    <button type="button" class="btn-secondary" onclick="nextSection('section-e')" 
+                            data-en="Next →" data-lg="Ekidako →">Next →</button>
+                </div>
+            </section>
+
+            <!-- SECTION E: Academic Performance -->
+            <section id="section-e" class="screen hidden">
+                <div class="section-header">
+                    <span class="section-badge">E</span>
+                    <h2 data-en="Your Academic Performance" data-lg="Obuwanguzi Bwo mu Kusoma">Your Academic Performance</h2>
+                </div>
+
+                <div class="card">
+                    <div class="question-block">
+                        <label class="question-label" data-en="13. What was your average grade in the last mock exams?" 
+                               data-lg="13. Akabonero ko ak'obulungi mu bizuubi by'omwezi ogwayitawo kwe kaki?">
+                            13. What was your average grade in the last mock exams?
+                        </label>
+                        <div class="grade-selector">
+                            <label class="grade-card excellent">
+                                <input type="radio" name="mock_grade" value="80_100" required>
+                                <span class="grade-letter">A</span>
+                                <span class="grade-range">80-100%</span>
+                                <span class="grade-desc" data-en="Excellent" data-lg="Kirungi nnyo">Excellent</span>
+                            </label>
+                            <label class="grade-card good">
+                                <input type="radio" name="mock_grade" value="70_79">
+                                <span class="grade-letter">B</span>
+                                <span class="grade-range">70-79%</span>
+                                <span class="grade-desc" data-en="Good" data-lg="Kirungi">Good</span>
+                            </label>
+                            <label class="grade-card average">
+                                <input type="radio" name="mock_grade" value="60_69">
+                                <span class="grade-letter">C</span>
+                                <span class="grade-range">60-69%</span>
+                                <span class="grade-desc" data-en="Average" data-lg="Wakati">Average</span>
+                            </label>
+                            <label class="grade-card below">
+                                <input type="radio" name="mock_grade" value="50_59">
+                                <span class="grade-letter">D</span>
+                                <span class="grade-range">50-59%</span>
+                                <span class="grade-desc" data-en="Below Average" data-lg="Wansi wakati">Below Average</span>
+                            </label>
+                            <label class="grade-card poor">
+                                <input type="radio" name="mock_grade" value="below_50">
+                                <span class="grade-letter">E/F</span>
+                                <span class="grade-range">&lt;50%</span>
+                                <span class="grade-desc" data-en="Poor" data-lg="Tekirungi">Poor</span>
+                            </label>
+                        </div>
+                        <p class="hint" data-en="This is confidential. Be honest to help the research." 
+                           data-lg="Kino kya kyama. Weebuze obwesigwa okuyamba okunoonyereza.">
+                            This is confidential. Be honest to help the research.
+                        </p>
+                    </div>
+
+                    <div class="question-block">
+                        <label class="question-label" data-en="14. How many hours per week do you spend studying (outside class time)?" 
+                               data-lg="14. Omulundi gwa ssawa mmeka mu wiiki ogusoma (okuggyako mu kibiina)?">
+                            14. How many hours per week do you spend studying (outside class time)?
+                        </label>
+                        <div class="slider-container">
+                            <input type="range" name="study_hours" min="0" max="40" value="10" class="slider" 
+                                   oninput="updateSliderValue(this, 'study-hours-val')">
+                            <div class="slider-labels">
+                                <span>0h</span>
+                                <span class="slider-value" id="study-hours-val">10 hours/week</span>
+                                <span>40h+</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question-block">
+                        <label class="question-label" data-en="15. How often do you read books for pleasure (not school books)?" 
+                               data-lg="15. Omulundi gwa kasera osoma ebitabo by'okusanyusa (si bya ttendekero)?">
+                            15. How often do you read books for pleasure (not school books)?
+                        </label>
+                        <div class="radio-group">
+                            <label class="radio-card">
+                                <input type="radio" name="reading_habit" value="daily" required>
+                                <span class="radio-icon">📚</span>
+                                <span data-en="Daily" data-lg="Buli lunaku">Daily</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="reading_habit" value="weekly">
+                                <span class="radio-icon">📖</span>
+                                <span data-en="Weekly" data-lg="Buli wiiki">Weekly</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="reading_habit" value="monthly">
+                                <span class="radio-icon">📕</span>
+                                <span data-en="Monthly" data-lg="Buli mwezi">Monthly</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="reading_habit" value="rarely">
+                                <span class="radio-icon">📰</span>
+                                <span data-en="Rarely" data-lg="Kisoba">Rarely</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="reading_habit" value="never">
+                                <span class="radio-icon">❌</span>
+                                <span data-en="Never" data-lg="Teri kiseera">Never</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button type="button" class="btn-ghost" onclick="prevSection('section-d')" 
+                            data-en="← Back" data-lg="← Emabega">← Back</button>
+                    <button type="button" class="btn-secondary" onclick="nextSection('section-f')" 
+                            data-en="Next →" data-lg="Ekidako →">Next →</button>
+                </div>
+            </section>
+
+            <!-- SECTION F: Sleep & Wellbeing -->
+            <section id="section-f" class="screen hidden">
+                <div class="section-header">
+                    <span class="section-badge">F</span>
+                    <h2 data-en="Sleep & Wellbeing" data-lg="Okwebaka n'Obulamu">Sleep & Wellbeing</h2>
+                </div>
+
+                <div class="card">
+                    <div class="question-block">
+                        <label class="question-label" data-en="16. What time do you usually go to sleep on school nights?" 
+                               data-lg="16. Omulundi gwa ssawa ki z'ogenda okwebaka ku bibiro by'okusoma?">
+                            16. What time do you usually go to sleep on school nights?
+                        </label>
+                        <div class="radio-group">
+                            <label class="radio-card">
+                                <input type="radio" name="sleep_time" value="before_9" required>
+                                <span class="radio-icon">🌅</span>
+                                <span data-en="Before 9 PM" data-lg="Olweggulo lw'essawa 9">Before 9 PM</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="sleep_time" value="9_10">
+                                <span class="radio-icon">🌆</span>
+                                <span data-en="9 PM - 10 PM" data-lg="Ssawa 9 - 10">9 PM - 10 PM</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="sleep_time" value="10_11">
+                                <span class="radio-icon">🌃</span>
+                                <span data-en="10 PM - 11 PM" data-lg="Ssawa 10 - 11">10 PM - 11 PM</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="sleep_time" value="11_12">
+                                <span class="radio-icon">🌌</span>
+                                <span data-en="11 PM - 12 AM" data-lg="Ssawa 11 - 12">11 PM - 12 AM</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="sleep_time" value="after_12">
+                                <span class="radio-icon">🌑</span>
+                                <span data-en="After 12 AM (Midnight)" data-lg="Oluvannyuma lwa ssawa 12 ez'ekiro">After 12 AM (Midnight)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question-block">
+                        <label class="question-label" data-en="17. How would you rate your sleep quality?" 
+                               data-lg="17. Olinga okwebaka kwange kwe kuti?">
+                            17. How would you rate your sleep quality?
+                        </label>
+                        <div class="radio-group">
+                            <label class="radio-card">
+                                <input type="radio" name="sleep_quality" value="very_good" required>
+                                <span class="radio-icon">😴</span>
+                                <span data-en="Very good - I wake up refreshed" data-lg="Kirungi nnyo - Nzuukuka n'amaanyi">Very good - I wake up refreshed</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="sleep_quality" value="good">
+                                <span class="radio-icon">🙂</span>
+                                <span data-en="Good - Mostly rested" data-lg="Kirungi - Nzuukuka bulungi">Good - Mostly rested</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="sleep_quality" value="fair">
+                                <span class="radio-icon">😐</span>
+                                <span data-en="Fair - Sometimes tired" data-lg="Wakati - Emirundi nkooye">Fair - Sometimes tired</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="sleep_quality" value="poor">
+                                <span class="radio-icon">😫</span>
+                                <span data-en="Poor - Often tired in class" data-lg="Tekirungi - Emirundi mingi nkooye mu kibiina">Poor - Often tired in class</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="sleep_quality" value="very_poor">
+                                <span class="radio-icon">😵</span>
+                                <span data-en="Very poor - Always exhausted" data-lg="Mbi nnyo - Bulijjo nkooye">Very poor - Always exhausted</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question-block">
+                        <label class="question-label" data-en="18. Do you use your phone in bed before sleeping?" 
+                               data-lg="18. Okozesa simu yo mu kisenge ng'ogenda okwebaka?">
+                            18. Do you use your phone in bed before sleeping?
+                        </label>
+                        <div class="radio-group">
+                            <label class="radio-card">
+                                <input type="radio" name="phone_before_bed" value="never" required>
+                                <span class="radio-icon">🚫</span>
+                                <span data-en="Never" data-lg="Teri kiseera">Never</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="phone_before_bed" value="rarely">
+                                <span class="radio-icon">🙂</span>
+                                <span data-en="Rarely" data-lg="Kisoba">Rarely</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="phone_before_bed" value="sometimes">
+                                <span class="radio-icon">🤔</span>
+                                <span data-en="Sometimes" data-lg="Omulundi gumu">Sometimes</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="phone_before_bed" value="often">
+                                <span class="radio-icon">📱</span>
+                                <span data-en="Often" data-lg="Emirundi mingi">Often</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="phone_before_bed" value="always">
+                                <span class="radio-icon">🔥</span>
+                                <span data-en="Every night" data-lg="Buli kiro">Every night</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button type="button" class="btn-ghost" onclick="prevSection('section-e')" 
+                            data-en="← Back" data-lg="← Emabega">← Back</button>
+                    <button type="button" class="btn-secondary" onclick="nextSection('section-g')" 
+                            data-en="Next →" data-lg="Ekidako →">Next →</button>
+                </div>
+            </section>
+
+            <!-- SECTION G: Self-Perception -->
+            <section id="section-g" class="screen hidden">
+                <div class="section-header">
+                    <span class="section-badge">G</span>
+                    <h2 data-en="Your Thoughts" data-lg="Ebirowozo Byo">Your Thoughts</h2>
+                </div>
+
+                <div class="card">
+                    <div class="question-block">
+                        <label class="question-label" data-en="19. How much do you agree: 'Social media helps my studies'" 
+                               data-lg="19. Olowoza nti 'Social media eyamba okusoma kwange'">
+                            19. How much do you agree: "Social media helps my studies"
+                        </label>
+                        <div class="likert-scale">
+                            <label class="likert-item">
+                                <input type="radio" name="sm_helps_studies" value="strongly_agree" required>
+                                <span class="likert-face">😍</span>
+                                <span data-en="Strongly Agree" data-lg="Nkyagala nnyo">Strongly Agree</span>
+                            </label>
+                            <label class="likert-item">
+                                <input type="radio" name="sm_helps_studies" value="agree">
+                                <span class="likert-face">🙂</span>
+                                <span data-en="Agree" data-lg="Nkyagala">Agree</span>
+                            </label>
+                            <label class="likert-item">
+                                <input type="radio" name="sm_helps_studies" value="neutral">
+                                <span class="likert-face">😐</span>
+                                <span data-en="Neutral" data-lg="Sikyagala so si nnembye">Neutral</span>
+                            </label>
+                            <label class="likert-item">
+                                <input type="radio" name="sm_helps_studies" value="disagree">
+                                <span class="likert-face">🙁</span>
+                                <span data-en="Disagree" data-lg="Sikyagala">Disagree</span>
+                            </label>
+                            <label class="likert-item">
+                                <input type="radio" name="sm_helps_studies" value="strongly_disagree">
+                                <span class="likert-face">😤</span>
+                                <span data-en="Strongly Disagree" data-lg="Sikyagala nnyo">Strongly Disagree</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question-block">
+                        <label class="question-label" data-en="20. How much do you agree: 'Social media distracts me from studying'" 
+                               data-lg="20. Olowoza nti 'Social media enkutulugunya okusoma'">
+                            20. How much do you agree: "Social media distracts me from studying"
+                        </label>
+                        <div class="likert-scale">
+                            <label class="likert-item">
+                                <input type="radio" name="sm_distracts" value="strongly_agree" required>
+                                <span class="likert-face">😍</span>
+                                <span data-en="Strongly Agree" data-lg="Nkyagala nnyo">Strongly Agree</span>
+                            </label>
+                            <label class="likert-item">
+                                <input type="radio" name="sm_distracts" value="agree">
+                                <span class="likert-face">🙂</span>
+                                <span data-en="Agree" data-lg="Nkyagala">Agree</span>
+                            </label>
+                            <label class="likert-item">
+                                <input type="radio" name="sm_distracts" value="neutral">
+                                <span class="likert-face">😐</span>
+                                <span data-en="Neutral" data-lg="Sikyagala so si nnembye">Neutral</span>
+                            </label>
+                            <label class="likert-item">
+                                <input type="radio" name="sm_distracts" value="disagree">
+                                <span class="likert-face">🙁</span>
+                                <span data-en="Disagree" data-lg="Sikyagala">Disagree</span>
+                            </label>
+                            <label class="likert-item">
+                                <input type="radio" name="sm_distracts" value="strongly_disagree">
+                                <span class="likert-face">😤</span>
+                                <span data-en="Strongly Disagree" data-lg="Sikyagala nnyo">Strongly Disagree</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question-block">
+                        <label class="question-label" data-en="21. If you could change one thing about your social media use, what would it be? (Optional)" 
+                               data-lg="21. Bw'oba oyinziza okukyusa ekintu kimu ku byo okola ku social media, kye kiki? (Si kyetaagisa)">
+                            21. If you could change one thing about your social media use, what would it be? (Optional)
+                        </label>
+                        <textarea name="change_one_thing" rows="3" class="text-input" 
+                                  placeholder="Type your answer here..." data-en="Type your answer here..." 
+                                  data-lg="Wandika wano eky'okuddamu..."></textarea>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button type="button" class="btn-ghost" onclick="prevSection('section-f')" 
+                            data-en="← Back" data-lg="← Emabega">← Back</button>
+                    <button type="button" class="btn-primary" onclick="submitSurvey()" 
+                            data-en="Submit Survey ✓" data-lg="Waayo Okusisinkana ✓">Submit Survey ✓</button>
+                </div>
+            </section>
+
+            <!-- Thank You Screen -->
+            <section id="thank-you" class="screen hidden">
+                <div class="card center-card">
+                    <div class="success-animation">
+                        <div class="checkmark">✓</div>
+                        <div class="confetti">🎉</div>
+                    </div>
+                    <h2 data-en="Thank You!" data-lg="Webale Nnyo!">Thank You!</h2>
+                    <p data-en="Your responses have been recorded. They will help improve education in Mukono District." 
+                       data-lg="Eby'okuddamu byo byawereddwa. Bijja okuyamba okulongoosa okusoma mu Disitulikiti y'e Mukono.">
+                        Your responses have been recorded. They will help improve education in Mukono District.
+                    </p>
+                    <div class="stats-box">
+                        <p><span id="response-id">Response ID: MKS-2026-####</span></p>
+                        <p data-en="Responses collected today:" data-lg="Eby'okuddamu ebyawereddwa leero:">Responses collected today:</p>
+                        <span id="daily-count" class="count-badge">Loading...</span>
+                    </div>
+                    <button class="btn-primary" onclick="location.reload()" 
+                            data-en="New Survey" data-lg="Okusisinkana Okuggya">New Survey</button>
+                </div>
+            </section>
+        </form>
+    </div>
+
+    <!-- Data Export Panel (Hidden by default, for researchers) -->
+    <div id="admin-panel" class="admin-panel hidden">
+        <button class="admin-toggle" onclick="toggleAdmin()">🔒</button>
+        <div class="admin-content">
+            <h3>Researcher Panel</h3>
+            <p>Local responses: <span id="local-count">0</span></p>
+            <button onclick="exportData()" class="btn-small">Export CSV</button>
+            <button onclick="clearLocalData()" class="btn-small btn-danger">Clear All</button>
+            <div id="export-area" class="export-area"></div>
+        </div>
+    </div>
+
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').then(function(registration) {
+                console.log('ServiceWorker registered:', registration.scope);
+            }).catch(function(error) {
+                console.log('ServiceWorker registration failed:', error);
+            });
+        }
+    </script>
+
+    <!-- Main App Script -->
+    <script src="js/app.js"></script>
+</body>
+</html>
